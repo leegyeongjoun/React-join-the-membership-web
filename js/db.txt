@@ -1,0 +1,9 @@
+mirrorright.dothome.co.kr/myadmin <-- phpadmin으로 넘어간다
+데이터베이스 생성
+mirrorright
+
+테이블 명
+kurly_member1
+
+비번
+닷홈 비밀번호
