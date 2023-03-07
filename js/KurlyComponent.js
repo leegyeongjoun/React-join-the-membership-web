@@ -867,9 +867,34 @@ class KurlyComponent extends React.Component {
                       //axios api : request(요청) -> response(응답)
                       //폼데이터 보내기 POST
                       //외부데이터 가져오기 GET
-
+                      //axios는 format데이터가 있어야한다.   
+                      let formData=new FormData();
+                      formData.append('id', 아이디);
+                      formData.append('pw', 비밀번호);
+                      formData.append('name', 이름);
+                      formData.append('email', 이메일);
+                      formData.append('hp', 휴대폰);
+                      formData.append('addr', `${주소1} ${주소2}`);
+                      formData.append('gender', 성별);
+                      formData.append('birth', `${생년} ${생월} ${생일}`);
+                      formData.append('addinput', `${추가입력사항}: ${추가입력상자}`);
+                      formData.append('agrement', 약관동의);
+                      formData.append('joindate', `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`);
                       
-    
+                      axios({
+                        // index.html 기준으로 감
+                        url:'./insert_table_kerly.php',
+                        method:'POST',
+                        data:formData
+                      }).then(
+                        (response)=>{
+                            console.log('axios 성공', response);
+                        }
+                      ).catch(
+                        (error)=>{
+                            console.log('axios 실패');
+                        }
+                      );
                       //초기화
                        this.setState({
                             아이디: '',

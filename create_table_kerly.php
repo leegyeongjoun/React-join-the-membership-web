@@ -1,17 +1,5 @@
 <?php
-    $servername='localhost';
-    $username='mirrorright';
-    $password='Cnd139723807!!';
-    $databasename='mirrorright';
-
-    $conn=mysqli_connect($servername, $username, $password, $databasename);
-    mysqli_set_charset($$conn, 'utf8');
-
-    if(!$conn){
-        die('데이터베이스 서버 접속 실패!');
-    }else{
-        echo "데이터베이스 서버 접속 성공!";
-    }
+    include_once('./header.php');
 
     $sql= "CREATE  TABLE   market_kerly_gaib_table (
         idx INT(11) NOT NULL AUTO_INCREMENT COMMENT '자동증가인덱스번호',
@@ -37,5 +25,6 @@
         echo "테이블 생성 실패 하였습니다.";
     }
 
-    mysqli_close($conn);
+    include_once('./footer.php');
 ?>
+
