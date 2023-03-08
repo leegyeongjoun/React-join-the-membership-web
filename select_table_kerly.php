@@ -12,6 +12,7 @@
             array_push($arr, array(
                 '번호' => $row['idx'],
                 '아이디' => $row['id'],
+                '비밀번호' => $row['pw'],
                 '이름' => $row['name'],
                 '이메일' => $row['email'],
                 '휴대폰' => $row['hp'],
@@ -25,6 +26,7 @@
     }
     //JSON 형식으로 변환
     $json_result=json_encode($arr, JSON_UNESCAPED_UNICODE);
+    $json_file=file_put_contents('./data/kerly_member.json', $json_result);
     echo $json_result;
 
     include_once('./footer.php');

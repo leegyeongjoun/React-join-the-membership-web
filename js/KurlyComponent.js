@@ -1,8 +1,8 @@
-
 class KurlyComponent extends React.Component {
     constructor(props){
         super(props);
         this.state ={
+            회원:[], // 데이터베이스 데이터를 가져와서 저장 하는 배열객체
             아이디: '',
             아이디ok:false,
             아이디중복확인: false,
@@ -15,39 +15,32 @@ class KurlyComponent extends React.Component {
             이메일:'',
             이메일ok:false,
             휴대폰:'',
+            휴대폰ok:false,
 
-            // 인증번호
-            휴대폰인증: '',
-            인증키: '123456',
+            휴대폰인증:'',
+            인증키:'123456',
 
-            //화면에 안 보이기위해  
             isPhoneOkOpen:false,
             isPhoneOkClass:true,
-            //타이머 
             isTimerOpen:true,
-            // 비활성화
             disabled1:false,
             disabled2:false,
-            //타이머 분 초
             minutes:2,
             seconds:59,
-            counterStart:false,
-            // setinterval 사용
-            setId2 : 0,
+            conterStart:false,
+            setId:0,
 
-            휴대폰ok:false,
             주소:'',
-            주소1:'',
-            주소2:'',
+            주소1: '',
+            주소2: '',
             성별:'선택안함',
             생년:'',
-            생월:'',
+            생월: '',
             생일:'',
             생년월일:'',
             추가입력사항:'',
-            // 추천인 아이디
-            isAddInputBoxShow: false,
-            addInputPlaceHolder: '',
+            isAddInputBoxShow:false,
+            addInputPlaceHoder:'',
             추가입력상자:'',
 
             약관동의: [],
@@ -61,8 +54,8 @@ class KurlyComponent extends React.Component {
             isClassPw1:'',
             isClassPw2:'',
             isClassPw3:'',
+            isClssPhone:'',
 
-            showPwRe:false,
             isClassPwRe:'',
 
             showEmail:false,
@@ -76,7 +69,6 @@ class KurlyComponent extends React.Component {
             showBirthDay:false,
             isClassBirthDay: '',
             birthDayGideText:'',
-            
         }
     }
     onMouseDown=(e)=>{
@@ -102,57 +94,59 @@ class KurlyComponent extends React.Component {
     }
 
     //아이디 중복확인 반복처리문
-    //1. 아이디에 입력값 === 저장된 아이디 비교
-    //2. localstorage 데이터에서 전체 추출
-    //3. 그 중에서 id만 추출
+    //1. 아이디에 입력값 ===저장된 아이디 비교
+    //2. 로컬스토레이지 데이터에서 전체 추출
+    //3. 아이디만 추출
     //4. 반복처리후 비교하여 같은 아이디가 있다면 true로 변환
-    //5. 결과 true면 이미 등록된 아이디 입니다.
+    //5. 결과 true이면 이미 등록된 아이디 입니다.
     //6. 결과가 false이면 사용가능한 아이디 입니다.
-  /*   idDoubleCheck(value){
-        const inputId=value;
+
+    /* idDoubleCheck(value){inputEmailtext
+        let inputId=value;
         let imsiArr=[]; //데이터베이스 임시객체
-        let ok=false; */
-        /* let imsi='otz4193' */
-        
-       /*  for(let i=0; i<localStorage.length; i++){ */
-            /* if(imsiArr.push(JSON.parse(localStorage.getItem(localStorage.key(i))).아이디 === inputId)){
+        let ok=false;
+
+        for(let i=0; i<localStorage.length; i++){
+            if( imsiArr.push( JSON.parse(localStorage.getItem(localStorage.key(i))).아이디 === inputId )){
+                console.log(imsiArr);
                 ok=true;
-                   
-            } */
-           /*  imsiArr.push(JSON.parse(localStorage.getItem(localStorage.key(i))).아이디)
-            if(imsiArr[i]===inputId){
-                ok=true
-            }
-            console.log('inputId:',inputId);
-            console.log(imsiArr); */
-            /* else{ok=false} */
-        /* }
-        for(let i=0; i<imsiArr.length; i++){
-            if(inputId===imsiArr[i].아이디){
-                
-                ok=true;
-                
-                return;
-                
-            }
-            
+              }  
+           
         }
-        if(ok!==true){
+       for(let i=0; i<imsiArr.length; i++){
+            if(inputId===imsiArr[i].아이디 ){
+                console.log(inputId);
+                console.log(imsiArr[i]);
+                ok=true;
+               
+                return;
+            }else{
+                ok=false;
+                console.log(ok)
+            }
+        }
+       // console.log(ok); 
+
+        
+
+        if(ok===true){
             this.setState({
                 아이디ok:true,
-                modalText:'사용 가능한 아이디 입니다'
+                modalText:'사용 가능한 아이디 입니다.'
             })
         }else{
             this.setState({
                 아이디ok:false,
-                modalText:'이미 등록된 아이디 입니다'
+                modalText:'이미 등록된 아이디 입니다.'
             })
         }
-        
+
     } */
+   
     //중복확인
     onClickIdModalEvent=(e) =>{
         e.preventDefault();
+        this.axiosGet(); // db가져오는거
         this.setState({
             isModalOpen: true,
             아이디중복확인: true,
@@ -171,12 +165,13 @@ class KurlyComponent extends React.Component {
             }else{
                 let imsiDb=[];
 
-                for(let i=0; i<localStorage.length; i++){
+                /* for(let i=0; i<localStorage.length; i++){
                     imsiDb.push(JSON.parse(localStorage.getItem(localStorage.key(i))))
                    
-                }
+                } */ //로컬
+                imsiDb = this.state.회원;
                 console.log(imsiDb)
-               let result=imsiDb.map((item) =>item.아이디===this.inputIdText);
+               let result = imsiDb.map((item) => item.아이디 === this.inputIdText);
                if(result.includes(true)){
                     this.setState({
                         modalText:'중복된 아이디 입니다',
@@ -195,6 +190,7 @@ class KurlyComponent extends React.Component {
     //중복확인 이메일 클릭 이벤트
     onClickEmailModalEvent=(e) =>{
         e.preventDefault();
+        this.axiosGet(); // db가져오는거
         const regExp=/^[A-Za-z0-9]+(.[A-Za-z0-9-_])*@[A-Za-z]+(.[A-Za-z])+(.[A-Za-z]{2,3})$/;
         this.setState({isModalOpen: true});
         if(this.emailValue===''){
@@ -208,52 +204,48 @@ class KurlyComponent extends React.Component {
                 this.setState({modalText:'잘못된 이메일 형식입니다.',
                 이메일ok:false
             })
-            }else{//이메일 정상일 때
-                let imsiDb = [];
+            }else{//이메일 정상
+                let imsiDb=[];
 
-                for(let i=0; i<localStorage.length; i++){
+                /* for(let i=0; i<localStorage.length; i++){
                     imsiDb.push(JSON.parse(localStorage.getItem(localStorage.key(i))))
-                    
-                }
-                // console.log(imsiDb);
-                let result=imsiDb.map((item)=> item.이메일===this.inputEmailtext);
-                if(result.includes(true)){
+                   
+                } */
+                imsiDb = this.state.회원;
+               // console.log(imsiDb)
+               let result=imsiDb.map((item) =>item.이메일===this.inputEmailtext);
+               if(result.includes(true)){
                     this.setState({
-                        modalText:"중복된 이메일입니다.",
-                        이메일ok:false
+                        modalText:'중복된 이메일 주소 입니다',
+                        이메일ok: false
                     })
-                }else{
-                    this.setState({
-                        modalText:"사용가능한 이메일입니다.",
-                        이메일ok: true
-                    })
-                }
-            }    
+               }else{
+                this.setState({
+                    modalText:'사용가능한 이메일 입니다',
+                    이메일ok: true
+                })
+               }
+                
+            }
         }
     }
 
-    //확인 버튼을 눌르면 닫힘
     onClickModalClose=(e) =>{
         e.preventDefault();
-        //false 안보이게 true는 보이게
         this.setState({isModalOpen: false});
 
     }
 
-    //비밀번호 창을 눌르면 밑에 조건들이 나타나게 끔
+
     onFocusPw=(e)=>{
        this.setState({showPw:true}) 
     }
-    // 값이 바뀌면 
     onChangePw=(value)=>{
-        // 내가 쓴 비밀번호로 바뀌게
         this.setState({비밀번호:value})
 
-        // 10자 이상
         const regExp1=/.{10,}/;
         //영문/숫자/특수문자(공백 제외)만 허용하며, 2개 이상 조합
         const regExp2=/((?=.*[A-Za-z])+((?=.*[0-9])+|(!@#$%&-_)+)+)[^\s][A-Za-z0-9!@#$%&-_]{10,}/;
-        // 똑같은 문자 글자가 3개이상 연속 불가
         const regExp3=/(.)\1\1/;
 
         if(value===''){
@@ -262,7 +254,6 @@ class KurlyComponent extends React.Component {
                 비밀번호1ok: false,
             })
         }else{
-            // 10자 이상일 때
             if(regExp1.test(value)){
                 this.setState({
                     isClassPw1:true,
@@ -282,7 +273,6 @@ class KurlyComponent extends React.Component {
                 비밀번호2ok:false,
             })
         }else{
-            //영문/숫자/특수문자(공백 제외)만 허용하며, 2개 이상 조합일때
             if(regExp2.test(value)){
                 this.setState({
                     isClassPw2:true,
@@ -302,7 +292,6 @@ class KurlyComponent extends React.Component {
                 비밀번호3ok:false,
             })
         }else{
-            //똑같은 문자가 3개이상 연속사용 안 했을 때
             if(regExp3.test(value)===false){
                 this.setState({
                     isClassPw3:true,
@@ -317,39 +306,31 @@ class KurlyComponent extends React.Component {
         }
     }
 
-    //비밀번호 확인
     onFocusPwRe=(e) =>{
-        // 밑에 조건이 나오게
         this.setState({showPwRe:true})
     }
     onChangePwRe=(value)=>{
-        // 내가 입력 한 값
         this.setState({비밀번호확인:value})
 
         if(value===''){
             this.setState({isClassPwRe:''})
         }else{
-            // 비밀번호의 값과 확인값이 같을 때
             if(this.state.비밀번호===value){
-                // 초록색
                 this.setState({isClassPwRe:true})
             }else{
-                // 빨간색
                 this.setState({isClassPwRe:false})
             }
         }
     }
 
-    // 내가 입력한 값으로 이름 작성 할 수있도록
     onChangeName=(value)=>{
         this.setState({이름:value})
     }
-    // 조건 보여주게 하는 것
     onFocusEmail=(e)=>{
         this.setState({showEmail: true});
     }
     onChangeEmail=(value)=>{
-        this.emailValue=value;//this를 사용하면 전역변수
+        this.emailValue=value;
         this.inputEmailtext=value;
         this.setState({이메일:value});
 
@@ -379,13 +360,10 @@ class KurlyComponent extends React.Component {
             }
         }
     }
-
-
     onChangePhone=(value)=>{
-
-        //숫자가 아닌 값이 써지면 빈 값을 넣기 위해
+    
         let result = value.replace(/[^0-9]/g, '');
-        
+    
         this.setState({휴대폰: result });
     
         //휴대폰 번호가 10이상이면 우측에 인증번호받기 버튼이 보인다.
@@ -398,11 +376,11 @@ class KurlyComponent extends React.Component {
     
         //휴대폰 번호 정규표현식
         // 010 7942 5305
-      }
-  
+    }
     onClickPhoneEvent=(e)=>{
         e.preventDefault();
         // 입력이 완료되고 난 후 인증번호 버튼을 클릭해서 실행
+
         if( !/^01[016789]{1}[0-9]{3,4}[0-9]{4}$/g.test(this.state.휴대폰) ){      
           this.setState({
               휴대폰ok: false,
@@ -413,16 +391,16 @@ class KurlyComponent extends React.Component {
         }
         else{
           this.setState({
-              휴대폰ok: true,
-              isModalOpen: true,
-              modalText:'인증번호가 발송되었습니다.',
-            // 인증번호창
-              isPhoneOkOpen: true,
-              disabled1:true,  
+            휴대폰ok: true,
+            isModalOpen:true,
+            modalText:'인증번호가 전송 되었습니다.'   ,
+            isPhoneOkOpen:true,
+            disabled1:true     
           });
           this.counterTimer();
         }
     }
+
     onChangePhoneOk=(value)=>{
         this.setState({휴대폰인증:value})
     }
@@ -436,7 +414,7 @@ class KurlyComponent extends React.Component {
                 isTimerOpen: false,
                 disabled2:true,
                 isPhoneOkClass:false,
-                휴대폰: this.state.휴대폰.replace(/^01[016789]{1}[0-9]{3,4}[0-9]{4}$/g, '$1-$2-$3'),
+                휴대폰: this.state.휴대폰,
             });
             clearInterval(this.state.setId);
         }else{
@@ -475,6 +453,7 @@ class KurlyComponent extends React.Component {
     onChangeGender=(value)=>{
         this.setState({성별:value})
     }
+
     //생년월일 체크 함수
     //1.생년
     //1900-2999
@@ -487,36 +466,36 @@ class KurlyComponent extends React.Component {
    //만 14세 미만 가입 불가
    //만 100세 초과 가입 불가
    //생년월일 저장
+
+
+
     birthDayCheckEventFn=(z) =>{
-        const {생년, 생월, 생일} =this.state;// 구조분해할당
+        const {생년, 생월, 생일} =this.state;
         const lastDate=new Date(생년, 생월, 0).getDate();//0=>말일을 찾아줌, 1=> 다음달 첫날을 찾아줌
         const nowYear=new Date().getFullYear();//2023
-        const nowMonth=new Date().getMonth()+1;//2 0달부터 카운트 하기때문에 +1해줘야 함
+        const nowMonth=new Date().getMonth()+1;//2
         const nowDate=new Date().getDate();//28
         const nowToday=new Date(nowYear,nowMonth, nowDate);//2023.2.28
-        const nowToday14=new Date(nowYear-14,nowMonth, nowDate ) // 만 14세 계싼
-        const nowToday100=new Date(nowYear-100,nowMonth, nowDate )  //100세이상 가입 X
-        const birthDay=new Date(생년, 생월, 생일);//1997/10/08
+        const nowToday14=new Date(nowYear-14,nowMonth, nowDate )
+        const nowToday100=new Date(nowYear-100,nowMonth, nowDate )
+        const birthDay=new Date(생년, 생월, 생일);//1980/04/03
 
         if(생년==='' && 생월==='' && 생일===''){
             return;
         }else{
            //생년 체크
            if(/^(?:1\d\d\d|2\d\d\d)$/g.test(생년)===false){
-                //값을 비교 했을 때 잘못작성
                 this.setState({
                     showBirthDay:true,
                     isClassBirthDay: false,
                     birthDayGideText:'태어난 년도 4자리를 정확하게 입력해 주세요'
                 })
            }else{
-                //제대로 작성
                 this.setState({
                     showBirthDay:false,
                     isClassBirthDay: '',
                     birthDayGideText:'',
                 })
-                //생월 비교 잘 못 작성했을 때
                 if(/^(?:0?[1-9]|1[012])$/g.test(생월)===false){
                     this.setState({
                         showBirthDay:true,
@@ -529,7 +508,6 @@ class KurlyComponent extends React.Component {
                         isClassBirthDay: '',
                         birthDayGideText:'',
                     })
-                    //생일을 잘못 작성했을 때와 생일의 lastDate가 크면 즉, 마지막 달보다 크다면 2월달 28 29가 있고 3월은 31인데 32를 썼을 때 
                     if(/^(?:0?[1-9]|1[0-9]|2[0-9]|3[0-1])$/g.test(생일)===false || 생일 > lastDate){
                         this.setState({
                             showBirthDay:true,
@@ -542,7 +520,7 @@ class KurlyComponent extends React.Component {
                             isClassBirthDay: '',
                             birthDayGideText:'',
                         })
-                        //미래로 작성 했을 때
+                        //미래
                         if(birthDay>nowToday){
                             this.setState({
                                showBirthDay:true,
@@ -555,7 +533,7 @@ class KurlyComponent extends React.Component {
                                 showBirthDay:false,
                                 isClassBirthDay:'',
                                 birthDayGideText:'' 
-                            })
+                             })
                         }
                         //만14세 가입 불가
                         if(birthDay>nowToday14){
@@ -563,14 +541,14 @@ class KurlyComponent extends React.Component {
                                 showBirthDay:true,
                                 isClassBirthDay:false,
                                 birthDayGideText:'만 14세 미만은 가입이 불가합니다.' 
-                            })
+                             })
                              return;
                         }else{
                             this.setState({
                                 showBirthDay:false,
                                 isClassBirthDay:'',
                                 birthDayGideText:'' 
-                            })
+                             })
                         }
                         //100세 이상 가입 불가
                         if(birthDay<nowToday100){
@@ -578,21 +556,21 @@ class KurlyComponent extends React.Component {
                                 showBirthDay:true,
                                 isClassBirthDay:false,
                                 birthDayGideText:'생년월일을 다시 확인해주세요.' 
-                            })
+                             })
                              return;
                         }else{
                             this.setState({
                                 showBirthDay:false,
                                 isClassBirthDay:'',
                                 birthDayGideText:'' 
-                            })
+                             })
                         }
                     }
                 }
-            }
+
+           }
         }
     }
-    //안에 내용들 체크하게
     onFocusEvent=(z)=>{
         this.birthDayCheckEventFn(z);
     }
@@ -601,45 +579,39 @@ class KurlyComponent extends React.Component {
     }
     onChangeYear=(value)=>{
         this.setState({생년:value});
-        // const regExp=/(?:1\d\d\d|2\d\d\d)/g;
-        // console.log(regExp.test(value))
     }
     onChangeMonth=(value)=>{
         this.setState({생월:value})
-        //1-12
-        // const regExp=/^(?:0?[1-9]|1[012])$/g;
-        // console.log(regExp.test(value))
     }
     onChangeDate=(value)=>{
         this.setState({생일:value})
-        //01-31 01 10 20 30 
-        // const regExp=/^(?:0?[1-9]|1[0-9]|2[0-9]|3[0-1])$/g;
-        // console.log(regExp.test(value))
     }
     onChangeChoocheon=(value, id)=>{
+       
         if(id==='event'){
             this.setState({
                 추가입력사항:value,
                 isAddInputBoxShow:true,
-                addInputPlaceHolder:'참여 이벤트명을 입력해주세요.'
+                addInputPlaceHoder:'참여 이벤트명을 입력해주세요'
             })
-        }else{//id일 때
+        }else{
             this.setState({
                 추가입력사항:value,
                 isAddInputBoxShow:true,
-                addInputPlaceHolder:'추천인 아이디를 입력해주세요.'
+                addInputPlaceHoder:'참여 추천인 아이디를 입력해주세요'
             })
         }
     }
-    onChangeAddInputBox=(value)=>{
+    
+    onChangeAddInputBox=(value) =>{
         this.setState({
             추가입력상자:value
         })
     }
-    daumAddressSearch = () =>{
-        const addrfn=(data)=>{
+    daumAddressSearch=()=>{
+       const addrfn=(data) =>{
             this.onChangeAddress1(data.address)
-        }
+       } 
         new daum.Postcode({
             oncomplete: function(data) {
                 addrfn(data);
@@ -648,8 +620,8 @@ class KurlyComponent extends React.Component {
     }
     onChangeAddress1=(value)=>{
         this.setState({주소1:value});
-        this.setState({isAddressInputShow:true});//주소재검색 버튼
-        this.setState({isAddressOn:false});// 검색이 완료되면 초기화 시키기위해서
+        this.setState({isAddressInputShow:true});//재검색
+        this.setState({isAddressOn:false});//검색완료되면 초기화
     }
     onChangeAddress2=(value) =>{
         this.setState({주소2:value})
@@ -661,69 +633,52 @@ class KurlyComponent extends React.Component {
     }
 
     //추가 입력사항 라디오 버튼 체인지 이벤트
-    
 
-    onChangeCheckEvent = (checked, value) => {
-        let result = '';// true인 친구를 누적해야 함
+
+    onChangeCheckEvent=(checked, value)=>{
+        let result = '';
         if(checked){
-            //둘 다 참일 때 SMS가 선택 돼있고 약관동의의 이메일값이 가지고 있다면(checked가 돼있는 상태)
-            if(value==='SMS' && this.state.약관동의.includes('이메일')){
-                // 변경되는 값에 약관동의에있는 기존에 있던것에 SMS와 무료배송---이 체크가 되게 하는 것
-                this.setState({약관동의: [...this.state.약관동의, 'SMS', '무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)']})
+            if(value==='SNS' && this.state.약관동의.includes('이메일')){
+               this.setState({약관동의: [...this.state.약관동의, 'SNS','무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)']}) 
             }
-            //SMS를 포함하고 있고 이메일을 클릭을 하면
-            else if(value==='이메일' && this.state.약관동의.includes('SMS')){
-                // 변경되는 값에 약관동의에있는 기존에 있던것에 SMS와 무료배송---이 체크가 되게 하는 것
-                this.setState({약관동의: [...this.state.약관동의, '이메일', '무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)']})
+           else if(value==='이메일' && this.state.약관동의.includes('SNS')){
+                this.setState({약관동의: [...this.state.약관동의, '이메일','무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)']})
             }
-            //value값의 SMS선택 돼있고 이메일이 선택이 안 돼있을 때 무료배송---을 눌렀을 때 이메일까지 체크가 되게
-            else if(value==='무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)' && this.state.약관동의.includes('SMS') && !this.state.약관동의.includes('이메일')){
-                // value값과 이메일 값까지 체크가 되게
-                this.setState({약관동의: [...this.state.약관동의, '이메일', value]})
+           else if(value==='무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)' && this.state.약관동의.includes('SNS') && !this.state.약관동의.includes('이메일')){
+                this.setState({약관동의: [...this.state.약관동의, '이메일', value ]})
+            } 
+             else if(value==='무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)' && !this.state.약관동의.includes('SNS') && this.state.약관동의.includes('이메일')){
+                this.setState({약관동의: [...this.state.약관동의, 'SNS', value ]})
+            } 
+           else if(value==='무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)' && this.state.약관동의.includes('SNS') && this.state.약관동의.includes('이메일')){
+                this.setState({약관동의: [...this.state.약관동의,  value ]})
             }
-            //value값의 이메일선택 돼있고 SMS가 선택이 안 돼있을 때 무료배송---을 눌렀을 때 이메일까지 체크가 되게
-            else if(value==='무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)' && !this.state.약관동의.includes('SMS') && this.state.약관동의.includes('이메일')){
-                // 이메일만 체크 돼있을 때 무료배송을 눌르면 value값과 SMS값이 체크되게
-                this.setState({약관동의: [...this.state.약관동의, 'SMS', value]})
-            }
-            //SMS포함 이메일도 포함 돼있으면
-            else if(value==='무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)' && this.state.약관동의.includes('SMS') && this.state.약관동의.includes('이메일')){
-                // value값이 보이라고 하기
-                this.setState({약관동의: [...this.state.약관동의, value]})
-            }
-            // SMS와 이메일이 포함되지 않았을 때
-            else if(value==='무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)' && !this.state.약관동의.includes('SMS') && !this.state.약관동의.includes('이메일')){
-                // 이메일 SMS value값이 나타나게
-                this.setState({약관동의: [...this.state.약관동의,'이메일','SMS', value]})
-            }
+            else if(value==='무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)' && !this.state.약관동의.includes('SNS') && !this.state.약관동의.includes('이메일')){
+                this.setState({약관동의: [...this.state.약관동의,'이메일','SNS',  value ]})
+            } 
             else{
-                //value값을 가지고오는데 이 value값은 밑에 imsi 선택하면 imsi 값으로 바뀜
                 this.setState({약관동의:[...this.state.약관동의, value]})
             }
-        // 체크 안되는 부분
+            
         }else{
-                //value가 선택이 되면
             if(value==='무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)'){
-                // 빈값에 약관동의에서 value값이 아닌 것을 filter해서 result에 넣기
-                result = this.state.약관동의.filter((item)=>item !== value); //value값이 없다는 얘기임, item은 imsi안에 내용들  내가 선택한 값이 아니면 result값에 넣기
-                result = result.filter((item) => item!=='SMS');//SNS가 없으면 result대입
-                result = result.filter((item) => item!=='이메일');//이메일이 없으면 result대입
-            }else if(value==='SMS'){
-                result = this.state.약관동의.filter((item)=>item !== value); //value값이 없다는 얘기임, item은 imsi안에 내용들  내가 선택한 값이 아니면 result값에 넣기 SMS가없다는 얘기임
-                result = result.filter((item) => item!=='무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)');//SNS가 없으면 result대입
-            }
-            else if(value==='이메일'){
-                result = this.state.약관동의.filter((item)=>item !== value); //value값이 없다는 얘기임, item은 imsi안에 내용들  내가 선택한 값이 아니면 result값에 넣기
-                result = result.filter((item) => item!=='무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)');//SNS가 없으면 result대입
+                result=this.state.약관동의.filter((item) => item!==value);
+                result=result.filter((item) => item!=='SNS')
+                result=result.filter((item) => item!=='이메일')
+                
+            }else if(value==='SNS'){
+                result=this.state.약관동의.filter((item) => item!==value);
+                result=result.filter((item) => item!=='무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)')
+            } else if(value==='이메일'){
+                result=this.state.약관동의.filter((item) => item!==value);
+                result=result.filter((item) => item!=='무료배송, 할인쿠폰 등 혜택/정보 수신 동의 (선택)')
             }else{
-                result = this.state.약관동의.filter((item)=>item !== value);
-            }
-            this.setState({약관동의: result});//값을 대입해 주는 값
-            // result = this.state.약관동의.filter((item)=>item !== value); //value값이 없다는 얘기임, item은 imsi안에 내용들  내가 선택한 값이 아니면 result값에 넣기
-            // this.setState({약관동의: result});
+                result=this.state.약관동의.filter((item) => item!==value);
+            } 
+            this.setState({약관동의: result});
         }
     }
-   
+    
      onChangeCheckEventAll=(checked, value)=>{
         let imsi=[
             `이용약관동의 (필수)`,
@@ -747,14 +702,12 @@ class KurlyComponent extends React.Component {
     //4. 중복확인 데이터 검증 아이디, 이메일
     onSubmitEvent=(e)=>{
         e.preventDefault();
-        
-        //구조분해할당
+    
         const { 
                 아이디, 비밀번호, 이름, 이메일, 휴대폰,  주소1, 주소2, 주소, 성별, 생년, 생월, 생일, 추가입력사항, 약관동의,
-                아이디ok, 비밀번호1ok, 비밀번호2ok, 비밀번호3ok, 이메일ok, 휴대폰ok, 아이디중복확인,추가입력상자
+                아이디ok, 비밀번호1ok, 비밀번호2ok, 비밀번호3ok, 이메일ok, 휴대폰ok, 아이디중복확인, 추가입력상자
         } = this.state;      
-        
-        // 비어있는지 물어보는 것
+    
         if(아이디==='' || 비밀번호 === '' || 이름 === '' ||  이메일==='' || 휴대폰==='' || 주소1==='' || 주소2==='' ){
             if(아이디===''){
               this.setState({
@@ -832,7 +785,7 @@ class KurlyComponent extends React.Component {
                 }
                 
                 console.log( cnt );
-                //필수가 3개인데 3보다 작으면 선택이 되지 않은 것 임으로 선택하라는 창을 만들어준다.
+    
                 if(cnt < 3){
                   this.setState({
                     isModalOpen : true,
@@ -845,58 +798,68 @@ class KurlyComponent extends React.Component {
                       //1. 임시객체 생성 
                       //2. JSON.stringify() 객체라 문자열 형식으로 변환
                       const 가입회원정보 = {
-                            //고유번호 저장: 자동으로 번호 증가 => auto_increament
-                            아이디: 아이디, //문자열 string 20자 == varchar(20)
-                            비밀번호: 비밀번호, // 문자열 string 20자 == varchar(20)
-                            이름: 이름, // 문자열 string 50자 == varchar(50)
-                            이메일: 이메일, // 문자열 string 100 == varchar(20)
-                            휴대폰: 휴대폰, // 문자열 string 13(-포함) == varchar(20)
-                            주소: ` ${주소1} , ${주소2}`, // 문자열 string 100 == varchar(100)
-                            성별: 성별, //문자열 string == varchar(4) 한글은 2글자 
-                            생년월일: `${생년} - ${생월} - ${생일}`,
-                            추가입력사항: `${추가입력사항}: ${추가입력상자}`, //문자열 string 250 == varchar(250)
-                            약관동의: 약관동의, //문자열 string 1500 == varchar(1500)
-                            가입일자: `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`, // 날짜 Date
-                            
-                      }
-                      console.log(가입회원정보)
-                      //저장                            key값    value값
-                      localStorage.setItem(가입회원정보.아이디, JSON.stringify(가입회원정보));
+                            //고유번호 저장 : 자동으로 번호 증가 auto_increment
+                            아이디: 아이디, //문자열 string 20 varchar(20)
+                            비밀번호: 비밀번호,//문자열 string 20 varchar(20)
+                            이름: 이름,//문자열 string 50 varchar(50)
+                            이메일: 이메일,//문자열 string 100 varchar(100)
+                            휴대폰: 휴대폰,//문자열 string 13 varchar(13)
+                            주소: ` ${주소1} ${주소2}`,//문자열 string 100 varchar(100)
+                            성별: 성별,//문자열 string 4 varchar(4)
+                            생년월일: `${생년} ${생월} ${생일}`,//날짜 Date
+                            추가입력사항: `${추가입력사항}: ${추가입력상자}`,//문자열 string 250 varchar(250)
+                            약관동의: 약관동의,//문자열 string 1500 varchar(1500)
+                            가입일자:`${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}` //날짜 Date
 
+                      }
+                    
+    
+                      console.log(가입회원정보)
+                      //저장
+                      localStorage.setItem(가입회원정보.아이디, JSON.stringify(가입회원정보));
+                      
                       //리액트
                       //axios api : request(요청) -> response(응답)
                       //폼데이터 보내기 POST
                       //외부데이터 가져오기 GET
-                      //axios는 format데이터가 있어야한다.   
-                      let formData=new FormData();
-                      formData.append('id', 아이디);
-                      formData.append('pw', 비밀번호);
-                      formData.append('name', 이름);
-                      formData.append('email', 이메일);
-                      formData.append('hp', 휴대폰);
-                      formData.append('addr', `${주소1} ${주소2}`);
-                      formData.append('gender', 성별);
-                      formData.append('birth', `${생년} ${생월} ${생일}`);
-                      formData.append('addinput', `${추가입력사항}: ${추가입력상자}`);
-                      formData.append('agrement', 약관동의);
-                      formData.append('joindate', `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`);
+                      //axios는 아래의 폼데이터 객체를 생성해야 가능
                       
+                      let formData = new FormData();
+                      formData.append( 'id' , 아이디 );
+                      formData.append( 'pw' , 비밀번호 );
+                      formData.append( 'name' , 이름 );
+                      formData.append( 'email' , 이메일 );
+                      formData.append( 'hp' , 휴대폰 );
+                      formData.append( 'addr' , `${주소1} ${주소2}` );
+                      formData.append( 'gender' , 성별 );
+                      formData.append( 'birth' , `${생년}-${생월}-${생일}` );
+                      formData.append( 'addinput' , `${추가입력사항}: ${추가입력상자}` );
+                      formData.append( 'agrement' , 약관동의 );
+                      formData.append( 'joindate' , `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}` );
+
                       axios({
-                        // index.html 기준으로 감
-                        url:'./insert_table_kerly.php',
-                        method:'POST',
-                        data:formData
-                      }).then(
-                        (response)=>{
-                            console.log('axios 성공', response);
-                        }
-                      ).catch(
-                        (error)=>{
-                            console.log('axios 실패');
-                        }
-                      );
+                        url:'./insert_table_kurly.php',
+                        method: 'POST',
+                        data: formData})
+                        .then((response)=>{
+                            // console.log( 'axios 성공', response )
+                            this.setState({
+                                isModalOpen: true,
+                                modalText: '마켓컬리 회원가입을 축하드립니다.'
+                            })
+                            this.axiosGet(); // DB 데이터 가져오기
+                        })
+                        .catch((error)=>{
+                            // console.log( 'axios 실패' )
+                            this.setState({
+                                isModalOpen: true,
+                                modalText: 'AXIOS API 실패'
+                            })
+                        })
+                      
+
                       //초기화
-                       this.setState({
+                    this.setState({
                             아이디: '',
                             아이디ok: false,
                             아이디중복확인: false,
@@ -921,39 +884,64 @@ class KurlyComponent extends React.Component {
                             생일:'',
                             생년월일: '',
                             추가입력사항: '',  //라디오버튼
-                            isAddInputBoxShow: false,
-                            addInputPlaceHolder: '',
+                            isAddInputBoxShow:false,
+                            addInputPlaceHoder:'',
                             추가입력상자:'',
                             약관동의: [],     //체크박스 다중선택 저장 객체 배열
                             isAddressOn: false,  //주소검색을 클릭하면 true로 변환 그럼 주소검색창이 열린다.
-                            isAddressInputShow: false,  //주소검색을 클릭하면 true로 변환 그럼 주소검색창이 열린다.
+                            isAddressInputShow:false,  //주소검색을 클릭하면 true로 변환 그럼 주소검색창이 열린다.
                             showId: false, //아이디의 가이드텍스트 show        
                             isClassId:'',  //클래스를 '' : true : false
                             showPw: false, //비밀번호의 가이드텍스트 show   
                             isClassPw1:'', //클래스를 '' : true : false
-                            isClassPw2:'', 
+                            isClassPw2:'',
                             isClassPw3:'',
                             showPwRe: false, //비밀번호확인  
                             isClassPwRe:'',
-                            showEmail:false,
                             isClassEmail:'', //이메일
+                            showEmail:false,
                             isModalOpen : false, //모달창 show & hide
                             modalText : '',  //아이디/이메일/인증번호받기 가이드 텍스트
                             isPhoneClass: false, //휴대폰 버튼 클래스
                             showBirthDay: false, //show hide
                             isClassBirthDay:'', //'',true, false
                             birthDayGuideText:'', //가이드텍스트 여러가지 내용
+                            
                       });
                 }
             }
         }
     
       }
+      async axiosGet() {
+        const response = await axios.get('./select_table_kurly.php')
+        this.listItems = response.data;
+        console.log(this.listItems);
+        this.setState({
+            회원: this.listItems
+        })
+      }
+      /* axiosGet = () => {
+        axios({
+            url: './select_table_kurly.php',
+            method: 'GET'
+        }).then((res) => {
+            this.setState({
+                회원: res.data
+            })
+        }).catch((error) => {
+            console.log( 'axios 실패', error )
+        })
+      } */
+
+      componentDidMount(){
+        this.axiosGet();
+      }
     render() {
         return (
             <div id="kurly">
                 <div className="title">
-                    <h1><img src="../../img/logo.svg" alt="" /></h1> 
+                    <h1><img src="./img/logo.svg" alt="로고" /></h1> 
                 </div>
                 <div className="content">
                     <h2>회원가입</h2>
@@ -971,7 +959,7 @@ class KurlyComponent extends React.Component {
                                         {
                                             this.state.showId && (
                                                 <div>
-                                                <p className={(this.state.isClassId===''?'':(this.state.isClassId===true?'green':'red'))}>6자 이상 16자 이하의 영문 혹은 영문과 숫자를 조합</p>
+                                                     <p className={(this.state.isClassId===''?'':(this.state.isClassId===true?'green':'red'))}>6자 이상 16자 이하의 영문 혹은 영문과 숫자를 조합</p>
                                                 </div>
                                             )
                                         }
@@ -1060,24 +1048,23 @@ class KurlyComponent extends React.Component {
                                     <div className="input-box">
                                         <input type="text" className="inputText" id="inputPhone" placeholder='숫자만 입력해주세요' value={this.state.휴대폰} onChange={(e)=> this.onChangePhone(e.target.value)} />
                                         <button disabled={this.disabled1} onClick={this.onClickPhoneEvent} className={`w120-btn ${this.state.isPhoneClass ? '': 'phone'}`}>인증번호받기</button>
-                                        
-                                        {
-                                            this.state.isPhoneOkOpen && (
-                                                <div>
-                                                    <input type="text" max-length='6' className='inputText' id='inputPhone1' placeholder='인증번호를 입력하세요' value={this.state.휴대폰인증} disabled={this.disabled2} onChange={(e) => this.onChangePhoneOk(e.target.value)}/>
-                                                    <button className={`w120-btn phoneok-btn ${this.state.isPhoneOkClass ? '' : 'phone'}`} disabled={this.disabled2} onClick={this.onClickPhoneOkEvent} >인증번호확인</button>
 
-                                                    {
-                                                        this.state.isTimerOpen && (
-                                                            // 10보다 작으면 앞에 0 입력
-                                                            <span className="counter-timer-box">{this.state.minutes}:{this.state.seconds<10 ? `0${this.state.seconds}` : this.state.seconds}</span>
-                                                        )
-                                                    }
-                                                </div>
-                                            )
-                                        }
-                                        
-                                   
+                                       {
+                                         this.state.isPhoneOkOpen && (
+                                            <div>
+                                                 <input type="text" maxLength='6' className='inputText' id="inputPhone1" placeholder='인증번호를 입력하세요' value={this.state.휴대폰인증} disabled={this.disabled2} onChange={(e) => this.onChangePhoneOk(e.target.value)} />
+                                                 <button className={`w120-btn phonok-btn ${this.state.isPhoneOkClass ? '' : 'phone'}`} disabled={this.disabled2}  onClick={this.onClickPhoneOkEvent} >인증번호확인</button>
+
+                                                 {
+                                                    this.state.isTimerOpen && (
+                                                        <span className="counter-timer-box">{this.state.minutes}:{this.state.seconds < 10 ? `0${this.state.seconds}`: this.state.seconds}</span>
+                                                    )
+                                                 }
+                                            </div>
+                                         )
+                                       }
+                                       
+                                       
                                     </div>
                                 </div>
                             </li>
@@ -1099,7 +1086,7 @@ class KurlyComponent extends React.Component {
                                             onClick={this.onClickAddress}
                                             type="button" 
                                             className='inputText addr' id="inputAddr"> 
-                                         <img src="../../img/ico_search.svg" alt="검색" />    
+                                         <img src="./img/ico_search.svg" alt="검색" />    
                                          <span>
                                             {
                                                 this.state.isAddressInputShow===true? `주소재검색`:`주소검색`
@@ -1108,9 +1095,9 @@ class KurlyComponent extends React.Component {
                                          </button>
                                         <div id="postcode">
                                             {
-                                                this.state.isAddressOn && (
+                                                this.state.isAddressOn && ( 
                                                     <div></div>
-                                                )
+                                                 )
                                             }
                                            
                                         </div>
@@ -1170,27 +1157,29 @@ class KurlyComponent extends React.Component {
                                         <span>추가입력 사항</span>
                                     </div>
                                     <div className="input-box radio-box1">
-                                         <div className='radio-box2'>
-                                              <label>
-                                                <input id='id' type="radio" checked={this.state.추가입력사항.includes(`추천인 아이디`)} value={`추천인 아이디`} onChange={(e) => this.onChangeChoocheon(e.target.value, e.target.id)} />
-                                                <span>추천인 아이디</span>
-                                              </label>
-                                              <label>
-                                                <input id='event' type="radio" checked={this.state.추가입력사항.includes(`참여 이벤트명`)} value={`참여 이벤트명`} onChange={(e) => this.onChangeChoocheon(e.target.value, e.target.id)} />
-                                                <span>참여 이벤트명</span>
-                                              </label>
+                                        <div className='radio-box2'>
+                                          <label>
+                                            <input id='id' type="radio" checked={this.state.추가입력사항.includes(`추천인 아이디`)} value={`추천인 아이디`} onChange={(e) => this.onChangeChoocheon(e.target.value, e.target.id)} />
+                                            <span>추천인 아이디</span>
+                                          </label>
+                                          <label>
+                                            <input id='event' type="radio" checked={this.state.추가입력사항.includes(`참여 이벤트명`)} value={`참여 이벤트명`} onChange={(e) => this.onChangeChoocheon(e.target.value, e.target.id)} />
+                                            <span>참여 이벤트명</span>
+                                          </label>
                                         </div>
                                         {
                                             this.state.isAddInputBoxShow && (
-                                                <div className='add-input-box'>
-                                                    <input  type="text" id='addInputBox' className='inputText' placeholder={this.state.addInputPlaceHolder} value={this.state.추가입력상자} onChange={(e)=>this.onChangeAddInputBox(e.target.value)}/>
-                                                    <p>
-                                                    가입 후 7일 내 첫 주문 배송완료 시, 친구초대 이벤트 적립금이 지급됩니다. <br />
-                                                    </p>
-                                                </div>
+                                                <div  className='add-input-box'>
+                                                <input type="text"  id='addInputBox' className='inputText'  placeholder={this.state.addInputPlaceHoder} value={this.state.추가입력상자} onChange={(e)=>this.onChangeAddInputBox(e.target.value)} />
+                                                <p>
+                                                추천인 아이디와 참여 이벤트명 중 하나만 선택 가능합니다. <br />
+                                                가입 이후는 수정이 불가능 합니다. <br />
+                                                대소문자 및 띄어쓰기에 유의해주세요.
+                                                </p>
+                                            </div>
                                             )
                                         }
-                                     
+                                          
                                     </div>
                                 </div>
                             </li>
@@ -1293,9 +1282,9 @@ class KurlyComponent extends React.Component {
             </div>
         );
     }
- }
+}
 
 ReactDOM.render(
-    <KurlyComponent/>,
-    document.getElementById('root'),
+    <KurlyComponent />,
+    document.getElementById('root')
 );

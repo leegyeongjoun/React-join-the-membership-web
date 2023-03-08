@@ -17,16 +17,18 @@
 
     //데이터 저장
 
-    $sql="INSERT INTO market_kerly_gaib_table (id, pw, name, email, hp ,addr ,gender, birth, addinput, agrement, joindate) VALUES ('$id', '$pw', '$name', '$email', '$hp', '$addr', '$gender', '$birth', '$addinput', '$agrement', '$joindate')";
+    $sql = "INSERT INTO market_kerly_gaib_table (id, pw, name, email, hp, addr, gender, birth, addinput, agrement, joindate)
+    VALUES ('$id', '$pw', '$name', '$email', '$hp', '$addr', '$gender', '$birth', '$addinput', '$agrement', '$joindate')";
 
     $result = mysqli_query($conn, $sql);
 
     //저장확인
     if($result===true){
-        echo "data table save";
+        echo "data table save complete";
     }else{
-        echo "data table no save";
+        echo "data table save fail";
     }
+    
 
     include_once('./footer.php');
 ?>
